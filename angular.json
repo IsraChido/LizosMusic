@@ -32,7 +32,7 @@
             "outputPath": "dist/demo",
             "polyfills": ["zone.js"],
             "scripts": [],
-            "styles": ["src/styles.css"],
+            "styles": ["src/styles.css","node_modules/ngx-spinner/animations/ball-clip-rotate.css"],
             "tsConfig": "tsconfig.app.json"
           }
         },

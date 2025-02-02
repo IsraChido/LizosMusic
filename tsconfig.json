@@ -18,8 +18,20 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "baseUrl": "./",
+    "paths": {
+      "@/ui/*": ["src/ui/*"],
+      "@/common/*": ["src/common/*"],
+      "@/asset/*": ["src/asset/*"],
+      "@/core/*": ["src/core/*"],
+      "@/data/*": ["src/data/*"],
+      "@/env/*": ["src/environments/*"],
+    },
   },
+  "include": [
+    "src/**/*.ts"
+  ],
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
