@@ -1,11 +1,11 @@
-import { InjectionToken, Provider } from "@angular/core";
-import { EventRepositoryImpl } from "../repositories/events.repository.impl";
-import { EventRepository } from "../../../domain/events/repositories/event.repository";
+import { Provider } from "@angular/core";
+import { EventsRepository } from "@/core/domain/events/repositories/events.repository";
+import { GetEventsUseCase } from "@/core/domain/events/usecases/getEvents.usecase";
+import { GetEventsByIdUseCase } from "@/core/domain/events/usecases/getEventsById.usecase";
+import { EventsImplRepository } from "../repositories/events.repository.impl";
 
-export const EVENT_REPOSITORY = new InjectionToken<EventRepository>(
-    "EventRepository"
-);
-// Exporting an array of providers
 export const eventsProviders: Provider[] = [
-    { provide: EVENT_REPOSITORY, useClass: EventRepositoryImpl },
+    { provide: EventsRepository, useClass: EventsImplRepository },
+    { provide: GetEventsUseCase, useClass: GetEventsUseCase },
+    { provide: GetEventsByIdUseCase, useClass: GetEventsByIdUseCase },
 ];

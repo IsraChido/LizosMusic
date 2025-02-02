@@ -1,32 +1,50 @@
+import { Observable, filter, of, switchMap } from "rxjs";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { EventService } from "../services/events.service";
-import { EventRepository } from "../../../domain/events/repositories/event.repository";
+import { EventsRepository } from "@/core/domain/events/repositories/events.repository";
+import { EventsService } from "../services/events.service";
 import {
-    Event,
-    EventDetailed,
-} from "../../../domain/events/models/event.response";
+    EventsResponse,
+    EventsResponseId,
+} from "@/core/domain/events/models/response/events.response";
+import { ServerErrorResponse } from "@/common/models/server-error.response";
 
 @Injectable({
     providedIn: "root",
 })
-export class EventRepositoryImpl implements EventRepository {
-    constructor(private readonly eventService: EventService) {}
-
-    /**
-     * Fetches all events from the remote data source.
-     * @returns Observable<ApiResponse<Event>>
-     */
-    getEvents(): Observable<Event[]> {
-        return this.eventService
-            .getEvents()
-            .pipe(map((response) => response.data));
+export class EventsImplRepository extends EventsRepository {
+    constructor(private readonly eventsService: EventsService) {
+        super();
     }
 
-    getEventsById(id: string): Observable<EventDetailed> {
-        return this.eventService
-            .getEventsById(id)
-            .pipe(map((response) => response.data));
+    override getEvents(params?: {
+        q?: string;
+        field?: string;
+        page?: string;
+    }): Observable<EventsResponse | ServerErrorResponse> {
+        return this.eventsService.getEvents(params).pipe(
+            filter(
+                (response: EventsResponse | ServerErrorResponse) =>
+                    response !== null
+            ),
+            switchMap((response: EventsResponse | ServerErrorResponse) => {
+                const events = response;
+                return of(events);
+            })
+        );
+    }
+
+    override getEventsById(
+        id: string
+    ): Observable<EventsResponseId | ServerErrorResponse> {
+        return this.eventsService.getEventsById(id).pipe(
+            filter(
+                (response: EventsResponseId | ServerErrorResponse) =>
+                    response !== null
+            ),
+            switchMap((response: EventsResponseId | ServerErrorResponse) => {
+                const detailedEvent = response;
+                return of(detailedEvent);
+            })
+        );
     }
 }
