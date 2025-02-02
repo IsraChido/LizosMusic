@@ -1,0 +1,58 @@
+<section>
+    <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4 gap-x-4 gap-y-2"
+    >
+        @for (event of events; track event) { @if (event.status === 'published')
+        {
+        <div class="flex flex-col">
+            <div class="bg-blue-400 rounded-lg flex flex-col h-full">
+                <img
+                    [class.animate-pulse]="imageLoadingMap[event.slug]"
+                    class="rounded-t-lg w-full h-48 object-cover bg-gray-400 animate-pulse"
+                    [src]="event.image_url"
+                    [alt]="event.slug"
+                    (load)="onImageLoad(event.slug)"
+                    loading="lazy"
+                />
+                <div class="p-4 flex flex-col flex-grow">
+                    <p class="text-left text-xl">{{ event.name }}</p>
+                    <p class="text-left text-base">
+                        {{
+                            [
+                                event.venue.name,
+                                event.venue.city,
+                                event.venue.state
+                            ] | join : ", "
+                        }}
+                    </p>
+                </div>
+                <p class="text-right text-sm pe-4">
+                    {{ event.start_at | date : "shortTime" }} -
+                    {{ event.end_at | date : "shortTime" }}
+                </p>
+                <div class="flex flex-wrap flex-row justify-end items-end p-4">
+                    @if (event.tags.length > 0) { @for (tag of
+                    event.tags.slice(0, 3); track tag) {
+                    <div
+                        class="rounded-full bg-slate-400 px-3 py-1 my-1 mx-2 max-h-12 max-w-32"
+                    >
+                        {{ tag }}
+                    </div>
+                    } @if (event.tags.length > 3) {
+                    <div
+                        class="rounded-full bg-slate-400 px-3 py-1 my-1 mx-2 max-h-12 max-w-32"
+                    >
+                        y más...
+                    </div>
+                    } }
+                </div>
+            </div>
+        </div>
+        } }
+    </div>
+    @if (events.length == 0) {
+    <h3 class="text-3xl w-full text-center pt-6">
+        Eventos no encontrados, intenta con otra búsqueda :(
+    </h3>
+    }
+</section>

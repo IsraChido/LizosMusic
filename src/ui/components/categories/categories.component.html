@@ -1,0 +1,13 @@
+<section>
+    <div class="grid grid-cols-1 px-2 pt-4">
+        <div class="border-gray-600 border p-3 bg-white rounded-sm">
+            <h4 class="text-teal-950 text-2xl">Asiento premium</h4>
+            <div class="flex flex-row items-center pb-4">
+                <h6 class="text-teal-800 text-xl">{{'120000' | currency: '$'}}</h6>
+                <p class="text-xl pl-10" [ngClass]="{'text-red-600': 1 > 2, 'text-amber-400': 1 > 0, 'text-green-600': 1 > 2}">x250</p>
+                <fa-icon [icon]="faTicket" class="pl-1"></fa-icon>
+            </div>
+            <button class="justify-self-start hover:bg-blue-500 bg-blue-600 hover:cursor-pointer text-white rounded-md px-2 py-1">Añadir al carrito</button>
+        </div>
+    </div>
+</section>

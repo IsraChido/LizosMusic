@@ -1,2 +1,30 @@
-<app-navbar></app-navbar>
-<app-search></app-search>
+<nav-component></nav-component>
+<main>
+    <article>
+        <h1 class="text-4xl text-center pt-12 pb-4 font-sans font-bold">
+            Busca tu evento, ¡aquí y ahora!
+        </h1>
+    </article>
+    <div class="grid justify-center">
+        <div class="pt-5">
+            <search-bar-component
+                (searchQuery)="onSearchQuery($event)"
+            ></search-bar-component>
+        </div>
+        <div class="pt-3">
+            <dropdown-component
+                (filterChanged)="onFilterChanged($event)"
+            ></dropdown-component>
+        </div>
+    </div>
+    <div #cardsSection class="pt-10 pb-2">
+        <cards-component [events]="events()"></cards-component>
+    </div>
+    <div class="pb-5 pt-3">
+        <paginator-component
+            [currentPage]="currentPage"
+            [totalPages]="totalPages"
+            (pageChanged)="onPageChanged($event)"
+        ></paginator-component>
+    </div>
+</main>

@@ -1,0 +1,17 @@
+<section>
+    <div class="flex justify-center relative w-full max-w-sm">
+        <input
+            #inputElement
+            type="text"
+            class="py-4 px-8 bg-cyan-100 rounded-l-xl border-gray-500 pr-16 w-full accent-indigo-50"
+            placeholder="Busca aquí..."
+            (keydown.enter)="onSearch(inputElement.value)"
+        />
+        <button
+            class="px-4 py-2 bg-blue-500 text-white rounded-r-xl flex items-center"
+            (click)="onSearch(inputElement.value)"
+        >
+            <fa-icon [icon]="faMagnifyingGlass"></fa-icon>
+        </button>
+    </div>
+</section>
