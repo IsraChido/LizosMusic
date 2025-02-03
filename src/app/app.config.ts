@@ -12,12 +12,14 @@ import { provideEffects } from "@ngrx/effects";
 import { provideStoreDevtools } from "@ngrx/store-devtools";
 import { cartReducer } from "@/core/store/cart.reducer";
 import { reservationProviders } from "@/data/reservations/providers/reservations.providers";
+import { paymentProviders } from "@/data/payments/providers/payments.providers";
 
 export const appConfig: ApplicationConfig = {
     providers: [
         provideRouter(appRoutes),
         eventsProviders,
         reservationProviders,
+        paymentProviders,
         provideHttpClient(
             withInterceptors([
                 spinnerInterceptor,

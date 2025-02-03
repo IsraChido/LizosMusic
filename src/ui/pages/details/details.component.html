@@ -1,6 +1,6 @@
 <nav-component></nav-component>
-<div class="flex flex-row">
-    <main class="w-8/12 bg-black p-2">
+<div class="flex flex-col sm:flex-row bg-slate-200">
+    <main class="w-full sm:w-8/12 p-2">
         <event-details-component
             [event]="eventDetails"
         ></event-details-component>
@@ -11,7 +11,7 @@
             ></categories-component>
         </div>
     </main>
-    <aside class="w-4/12 bg-blue-300 p-2">
+    <aside class="w-full sm:w-4/12 p-2">
         <div class="pb-2">
             <cart-component [eventId]="eventDetails?.id"></cart-component>
         </div>

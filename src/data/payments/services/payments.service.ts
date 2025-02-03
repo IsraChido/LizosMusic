@@ -1,7 +1,7 @@
 import { ServerErrorResponse } from "@/common/models/server-error.response";
-import { ReservationBody } from "@/core/domain/reservations/models/body/reservations.body";
-import { ReservationResponse } from "@/core/domain/reservations/models/response/reservations.response";
-import { ReservationApi } from "@/core/domain/reservations/services/reservations.api";
+import { PaymentsBody } from "@/core/domain/payments/models/body/payments.body";
+import { PaymentsResponse } from "@/core/domain/payments/models/response/payments.response";
+import { PaymentsApi } from "@/core/domain/payments/services/payments.api";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs/internal/Observable";
@@ -12,21 +12,21 @@ import { environment as env } from "src/environments/environment";
 @Injectable({
     providedIn: "root",
 })
-export class ReservationService extends ReservationApi {
+export class PaymentsService extends PaymentsApi {
     constructor(private readonly http: HttpClient) {
         super();
     }
 
     private readonly baseUrl = env.baseHost;
-    private readonly endpoint = env.endpoints.reservations;
+    private readonly endpoint = env.endpoints.payments;
 
-    override postReservation(
-        body: ReservationBody
-    ): Observable<ReservationResponse | ServerErrorResponse> {
+    override postPayments(
+        body: PaymentsBody
+    ): Observable<PaymentsResponse | ServerErrorResponse> {
         const URL = `${this.baseUrl}${this.endpoint}`;
 
         return this.http
-            .post<ReservationResponse>(URL, body)
+            .post<PaymentsResponse>(URL, body)
             .pipe(catchError(this.handleError));
     }
 

@@ -25,16 +25,28 @@
         </div>
         <div *ngIf="cart.length > 0" class="w-full mt-4">
             <button
-                class="w-full bg-teal-600 text-white text-xl font-bold py-3 rounded-md hover:bg-teal-800 mb-6"
+                class="w-full bg-teal-600 text-white text-xl font-bold disabled:bg-teal-300 py-3 rounded-md hover:bg-teal-800 mb-6"
                 (click)="startReservation()"
                 (keydown.enter)="startReservation()"
+                *ngIf="!reservationDetails && !isProcessing"
+                [disabled]="isProcessing"
             >
                 Reservar
             </button>
         </div>
+        <div *ngIf="reservationDetails && remainingTime" class="w-full mt-4">
+            <button
+                *ngIf="!paymentFinished"
+                class="w-full bg-teal-600 text-white text-xl font-bold py-3 rounded-md hover:bg-teal-800 mb-6"
+                (click)="isModalOpen = true"
+                (keydown.enter)="isModalOpen = true"
+            >
+                Pagar - {{ remainingTime }}
+            </button>
+        </div>
     </div>
     <div *ngIf="cart$ | async as cart">
-        <div *ngIf="cart.length === 0">
+        <div *ngIf="cart.length === 0 && !remainingTime">
             <div
                 class="flex flex-row rounded-md border w-full bg-slate-100 mb-2 py-2 px-4"
             >
@@ -47,3 +59,9 @@
         </div>
     </div>
 </section>
+
+<modal-component
+    *ngIf="isModalOpen"
+    (modalFinished)="processPayment()"
+    (modalClose)="isModalOpen = $event"
+></modal-component>

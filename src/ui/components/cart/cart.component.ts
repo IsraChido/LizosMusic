@@ -10,10 +10,25 @@ import { PostReservationUseCase } from "../../../core/domain/reservations/usecas
 import { ReservationBody } from "@/core/domain/reservations/models/body/reservations.body";
 import Swal from "sweetalert2";
 import { take } from "rxjs/internal/operators/take";
+import { ReservationResponse } from "@/core/domain/reservations/models/response/reservations.response";
+import { ServerErrorResponse } from "@/common/models/server-error.response";
+import { PostPaymentsUseCase } from "@/core/domain/payments/usecases/postPayments.usecase";
+import { PaymentsBody } from "@/core/domain/payments/models/body/payments.body";
+import { PaymentsResponse } from "@/core/domain/payments/models/response/payments.response";
+import { ModalComponent } from "../modal/modal.component";
+import { Router } from "@angular/router";
 
 @Component({
     selector: "cart-component",
-    imports: [FaIconComponent, AsyncPipe, NgFor, NgIf, NgStyle, CurrencyPipe],
+    imports: [
+        FaIconComponent,
+        AsyncPipe,
+        NgFor,
+        NgIf,
+        NgStyle,
+        CurrencyPipe,
+        ModalComponent,
+    ],
     templateUrl: "./cart.component.html",
     styleUrl: "./cart.component.scss",
 })
@@ -22,6 +37,10 @@ export class CartComponent implements OnChanges {
     faCartShopping = faCartShopping;
 
     isProcessing = false;
+    isModalOpen = false;
+    paymentFinished = false;
+    reservationDetails?: ReservationResponse;
+    remainingTime: string = "";
 
     @Input() eventId?: number;
 
@@ -29,7 +48,9 @@ export class CartComponent implements OnChanges {
 
     constructor(
         private store: Store,
-        private postReservationUseCase: PostReservationUseCase
+        private router: Router,
+        private postReservationUseCase: PostReservationUseCase,
+        private postPaymentsUseCase: PostPaymentsUseCase
     ) {}
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -64,18 +85,32 @@ export class CartComponent implements OnChanges {
             this.cart$.pipe(take(1)).subscribe((cart) => {
                 const reservationBody = this.createReservationBody(cart);
                 this.postReservationUseCase.execute(reservationBody).subscribe(
-                    (response) => {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Reserva realizada exitosamente",
-                            text: "Tu reserva ha sido procesada con éxito.",
-                            confirmButtonText: "Aceptar",
-                        }).then(() => {
-                            this.isProcessing = false;
-                            this.updateStock(cart);
-                            this.clearCart();
-                            console.log("Reservation successful", response);
-                        });
+                    (response: ReservationResponse | ServerErrorResponse) => {
+                        if ("data" in response) {
+                            this.reservationDetails = response;
+                            Swal.fire({
+                                icon: "success",
+                                title: "Reserva realizada",
+                                text: `${response.message}`,
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                this.isProcessing = false;
+                                this.updateStock(cart);
+                                this.clearCart();
+                                this.startCountdown();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text:
+                                    response.message ||
+                                    "Hubo un problema con tu reserva. Inténtalo nuevamente.",
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                this.isProcessing = false;
+                            });
+                        }
                     },
                     (error) => {
                         console.error("Reservation failed", error);
@@ -89,6 +124,109 @@ export class CartComponent implements OnChanges {
                         });
                     }
                 );
+            });
+        }
+    }
+
+    startCountdown() {
+        if (this.reservationDetails) {
+            const holdExpiration = new Date(
+                this.reservationDetails.data.holdExpiration
+            );
+            const currentTime = new Date();
+            let remainingTime =
+                holdExpiration.getTime() - currentTime.getTime();
+
+            if (remainingTime > 0) {
+                this.updateRemainingTime(remainingTime);
+
+                const timerInterval = setInterval(() => {
+                    remainingTime -= 1000;
+                    if (remainingTime <= 0) {
+                        clearInterval(timerInterval);
+                        this.remainingTime = "El tiempo expiró para el pago.";
+                    } else {
+                        this.updateRemainingTime(remainingTime);
+                    }
+                }, 1000);
+            }
+        }
+    }
+
+    updateRemainingTime(remainingTime: number) {
+        const minutes = Math.floor(
+            (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+        this.remainingTime = `${minutes} minutos y ${seconds} segundos restantes.`;
+    }
+
+    processPayment() {
+        if (this.remainingTime !== "El tiempo expiró para el pago.") {
+            const reservationId = this.reservationDetails?.data?.id;
+
+            if (reservationId) {
+                const paymentBody: PaymentsBody = {
+                    reservationId: reservationId,
+                };
+
+                this.postPaymentsUseCase.execute(paymentBody).subscribe(
+                    (response: PaymentsResponse | ServerErrorResponse) => {
+                        if ("data" in response) {
+                            const tickets = response.data.tickets
+                                .map(
+                                    (ticket) =>
+                                        `${ticket.quantity} x ${ticket.category}`
+                                )
+                                .join(", ");
+
+                            const message = `Pago exitoso. Detalles del ticket: ${tickets}. Disfruta del evento :)`;
+
+                            this.paymentFinished = true;
+
+                            Swal.fire({
+                                icon: "success",
+                                title: response.message || "Pago realizado",
+                                text: message,
+                                confirmButtonText: "Aceptar",
+                            }).then(() => {
+                                this.router.navigateByUrl("/");
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text:
+                                    response.message ||
+                                    "Hubo un problema con el pago. Inténtalo nuevamente.",
+                                confirmButtonText: "Aceptar",
+                            });
+                        }
+                    },
+                    (error) => {
+                        console.error("Payment failed", error);
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Hubo un problema con el pago. Inténtalo nuevamente.",
+                            confirmButtonText: "Aceptar",
+                        });
+                    }
+                );
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "No se pudo obtener el ID de reserva.",
+                    confirmButtonText: "Aceptar",
+                });
+            }
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "El tiempo para realizar el pago ha expirado.",
+                confirmButtonText: "Aceptar",
             });
         }
     }

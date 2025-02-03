@@ -1,10 +1,10 @@
 import { Observable, filter, of, switchMap } from "rxjs";
 import { Injectable } from "@angular/core";
 import { ServerErrorResponse } from "@/common/models/server-error.response";
-import { ReservationResponse } from "@/core/domain/payments/models/payments.response";
 import { ReservationRepository } from "@/core/domain/reservations/repositories/reservations.repository";
 import { ReservationService } from "../services/reservations.service";
 import { ReservationBody } from "@/core/domain/reservations/models/body/reservations.body";
+import { ReservationResponse } from "@/core/domain/reservations/models/response/reservations.response";
 
 @Injectable({
     providedIn: "root",

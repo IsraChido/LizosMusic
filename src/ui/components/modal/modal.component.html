@@ -1,44 +1,129 @@
-<!-- Open Modal Button -->
-<button (click)="isModalOpen = true" class="px-4 py-2 bg-blue-600 text-white rounded-md">
-    Open Modal
-</button>
+<div class="fixed inset-0 flex justify-center items-center backdrop-blur-sm">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-11/12 sm:w-6/12">
+        <h4 class="text-2xl pb-7">Precio total:</h4>
 
-<!-- Modal (Conditional Rendering with *ngIf) -->
-@if (isModalOpen) {
-    <div class="fixed inset-0 flex justify-center items-center backdrop-blur-sm">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-6/12">
-            <h4 class="text-2xl pb-7">Precio total: </h4>
-
-            <div class="grid grid-cols-2 gap-4">
+        <form [formGroup]="paymentForm" (ngSubmit)="submitForm()">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="flex flex-col">
                     <label for="name" class="pb-1">Nombre completo</label>
-                    <input type="text" id="name" class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full" placeholder="Ricardo Sánchez Andrade">
+                    <input
+                        type="text"
+                        id="name"
+                        class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full"
+                        placeholder="Ricardo Sánchez Andrade"
+                        formControlName="fullName"
+                    />
+                    <div
+                        *ngIf="fullName?.touched && fullName?.invalid"
+                        class="text-red-600"
+                    >
+                        <div *ngIf="fullName?.errors?.['required']">
+                            El nombre es obligatorio.
+                        </div>
+                        <div *ngIf="fullName?.errors?.['minlength']">
+                            El nombre debe tener al menos 6 caracteres.
+                        </div>
+                        <div *ngIf="fullName?.errors?.['maxlength']">
+                            El nombre no puede tener más de 255 caracteres.
+                        </div>
+                    </div>
                 </div>
                 <div class="flex flex-col">
                     <label for="email" class="pb-1">Correo electrónico</label>
-                    <input type="email" id="email" class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full" placeholder="rsandrade@gmail.com">
+                    <input
+                        type="email"
+                        id="email"
+                        class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full"
+                        placeholder="rsandrade@gmail.com"
+                        formControlName="email"
+                    />
+                    <div
+                        *ngIf="email?.touched && email?.invalid"
+                        class="text-red-600"
+                    >
+                        <div *ngIf="email?.errors?.['required']">
+                            El correo es obligatorio.
+                        </div>
+                        <div *ngIf="email?.errors?.['email']">
+                            Introduzca un correo válido.
+                        </div>
+                    </div>
                 </div>
                 <div class="flex flex-col">
                     <label for="phone-number" class="pb-1">Teléfono</label>
-                    <input type="text" id="phone-number" class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full" placeholder="669-278-9422" [value]="formattedPhoneNumber" (input)="formatPhoneNumber($event)">
+                    <input
+                        type="text"
+                        id="phone-number"
+                        class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full"
+                        placeholder="669-278-9422"
+                        formControlName="phoneNumber"
+                        [value]="formattedPhoneNumber"
+                        (input)="formatPhoneNumber($event)"
+                    />
+                    <div
+                        *ngIf="phoneNumber?.touched && phoneNumber?.invalid"
+                        class="text-red-600"
+                    >
+                        <div *ngIf="phoneNumber?.errors?.['required']">
+                            El teléfono es obligatorio.
+                        </div>
+                        <div *ngIf="phoneNumber?.errors?.['minlength']">
+                            El teléfono debe tener exactamente 10 dígitos.
+                        </div>
+                        <div *ngIf="phoneNumber?.errors?.['maxlength']">
+                            El teléfono no puede tener más de 10 dígitos.
+                        </div>
+                    </div>
                 </div>
                 <div class="flex flex-col">
-                    <label for="card-number" class="pb-1">Tarjeta de débito/crédito</label>
-                    <input type="text" id="card-number" class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full" placeholder="4444-3333-2222-1111" [value]="formattedCreditCard" (input)="formatCreditCard($event)">
+                    <label for="card-number" class="pb-1"
+                        >Tarjeta de débito/crédito</label
+                    >
+                    <input
+                        type="text"
+                        id="card-number"
+                        class="py-4 px-3 bg-gray-100 rounded-xl border-1 border-gray-700 w-full"
+                        placeholder="4444-3333-2222-1111"
+                        formControlName="creditCard"
+                        [value]="formattedCreditCard"
+                        (input)="formatCreditCard($event)"
+                    />
+                    <div
+                        *ngIf="creditCard?.touched && creditCard?.invalid"
+                        class="text-red-600"
+                    >
+                        <div *ngIf="creditCard?.errors?.['required']">
+                            El número de tarjeta es obligatorio.
+                        </div>
+                        <div *ngIf="creditCard?.errors?.['minlength']">
+                            La tarjeta debe tener 16 dígitos.
+                        </div>
+                        <div *ngIf="creditCard?.errors?.['maxlength']">
+                            La tarjeta no puede tener más de 16 dígitos.
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-4 mt-4">
                 <div class="col-span-2"></div>
                 <div class="col-span-2 flex justify-end space-x-4">
-                    <button (click)="isModalOpen = false" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 w-full">
+                    <button
+                        type="button"
+                        (click)="closeModal()"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 w-full"
+                    >
                         Cancelar
                     </button>
-                    <button (click)="isModalOpen = false" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:cursor-pointer hover:bg-blue-500 w-full">
+                    <button
+                        type="submit"
+                        [disabled]="paymentForm.invalid"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:cursor-pointer disabled:bg-blue-300 hover:bg-blue-500 w-full"
+                    >
                         Pagar
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
-}
+</div>

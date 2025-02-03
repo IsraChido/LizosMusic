@@ -1,9 +1,10 @@
 import { Observable } from "rxjs";
-import { ApiResponse, ReservationResponse } from "../models/payments.response";
-import { PaymentsBody } from "../models/payments.body";
+import { ServerErrorResponse } from "@/common/models/server-error.response";
+import { PaymentsBody } from "../models/body/payments.body";
+import { PaymentsResponse } from "../models/response/payments.response";
 
-export interface PaymentsRepository {
-    postPayments(
+export abstract class PaymentsRepository {
+    abstract postPayments(
         body: PaymentsBody
-    ): Observable<ApiResponse<ReservationResponse>>;
+    ): Observable<PaymentsResponse | ServerErrorResponse>;
 }
