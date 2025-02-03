@@ -1,9 +1,19 @@
 <nav class="py-5 lg:py-5 w-full bg-gray-400">
-    <div class="flex justify-center md:justify-end md:pe-15 lg:pe-20">
-        <img src="https://placehold.co/60x60" alt="logo" class="rounded-md">
-        <div class="flex flex-col ms-4">
-            <h1 class="text-gray-800 font-bold text-xl lg:text-3xl">Lizos Music</h1>
-            <h3 class="text-gray-600 font-medium text-base md:text-lg">Bienvenido al sitio web</h3>
-        </div>
+    <div class="flex justify-center sm:justify-end sm:pe-12 lg:pe-20">
+        <a class="cursor-pointer flex" [routerLink]="['/']">
+            <img
+                src="https://placehold.co/60x60"
+                alt="logo"
+                class="rounded-md"
+            />
+            <div class="flex flex-col ms-4">
+                <h1 class="text-gray-800 font-bold text-xl lg:text-3xl">
+                    Lizos Music
+                </h1>
+                <h3 class="text-gray-600 font-medium text-base md:text-lg">
+                    Bienvenido al sitio web
+                </h3>
+            </div>
+        </a>
     </div>
 </nav>

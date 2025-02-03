@@ -1,10 +1,48 @@
 <section>
-    <div class="flex flex-row rounded-md border w-full bg-slate-100">
-        <div class="py-2 px-4 flex justify-between w-full">
-            <p class="text-lg">Asiento Premium</p>
-            <div class="flex flex-row items-center">
-                <p class="text-lg">x4</p>
-                <fa-icon [icon]="faXmark" class="ml-3 text-red-600 hover:cursor-pointer"></fa-icon>
+    <div *ngIf="cart$ | async as cart">
+        <div
+            *ngFor="let item of cart"
+            class="flex flex-row rounded-md border w-full bg-slate-100 mb-2"
+        >
+            <div class="py-2 px-4 flex justify-between w-full">
+                <p class="text-lg" [ngStyle]="{ color: item.color }">
+                    {{ item.category }}:
+                    <span class="text-teal-950">{{
+                        item.price | currency : "$"
+                    }}</span>
+                </p>
+                <div class="flex flex-row items-center">
+                    <p class="text-lg">x{{ item.quantity }}</p>
+                    <fa-icon
+                        [icon]="faMinus"
+                        class="ml-3 text-red-600 hover:cursor-pointer"
+                        (click)="
+                            removeItem(item.category, item.stock, item.quantity)
+                        "
+                    ></fa-icon>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="cart.length > 0" class="w-full mt-4">
+            <button
+                class="w-full bg-teal-600 text-white text-xl font-bold py-3 rounded-md hover:bg-teal-800 mb-6"
+                (click)="startReservation()"
+                (keydown.enter)="startReservation()"
+            >
+                Reservar
+            </button>
+        </div>
+    </div>
+    <div *ngIf="cart$ | async as cart">
+        <div *ngIf="cart.length === 0">
+            <div
+                class="flex flex-row rounded-md border w-full bg-slate-100 mb-2 py-2 px-4"
+            >
+                <fa-icon
+                    [icon]="faCartShopping"
+                    class="me-2 text-gray-600"
+                ></fa-icon>
+                <p>Tu carrito se encuentra vacío.</p>
             </div>
         </div>
     </div>

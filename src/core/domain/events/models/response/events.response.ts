@@ -1,50 +1,58 @@
-import { ServerErrorResponse } from "../../../../../common/models/server-error.response";
-import { ServerSuccessResponse, ServerSuccessResponseWithMeta } from "../../../../../common/models/server-success.response";
+import {
+    ServerSuccessResponse,
+    ServerSuccessResponseWithMeta,
+} from "../../../../../common/models/server-success.response";
 
 export type EventArray = Event[];
 
 export interface EventDetailed extends Event {
+    venue: VenueDetailed;
     pricing: Pricing[];
     reviews: Reviews;
 }
 
+export interface VenueDetailed extends Venue {
+    postal_code: string;
+    timezone: string;
+    maps_url: string;
+}
+
 export interface Event {
-    id:        number;
-    name:      string;
-    slug:      string;
-    start_at:  Date;
-    end_at:    Date;
-    status:    string;
-    tags:      string[];
-    venue:     Venue;
+    id: number;
+    name: string;
+    slug: string;
+    start_at: Date;
+    end_at: Date;
+    status: string;
+    tags: string[];
+    venue: Venue;
     image_url: string;
 }
 
-
 export interface Venue {
-    id:      number;
-    name:    string;
-    city:    string;
-    state:   string;
+    id: number;
+    name: string;
+    city: string;
+    state: string;
     country: string;
 }
 
 export interface Pricing {
-    price:    number;
+    price: number;
     category: string;
-    color:    string;
-    stock:    number;
+    color: string;
+    stock: number;
 }
 
 export interface Reviews {
     rating: number;
-    count:  number;
+    count: number;
     recent: Review[];
 }
 
 export interface Review {
-    user:    string;
-    rating:  number;
+    user: string;
+    rating: number;
     comment: string;
 }
 

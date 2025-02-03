@@ -1,1 +1,27 @@
-<p>details works!</p>
+<nav-component></nav-component>
+<div class="flex flex-row">
+    <main class="w-8/12 bg-black p-2">
+        <event-details-component
+            [event]="eventDetails"
+        ></event-details-component>
+        <div class="pt-2">
+            <categories-component
+                [pricing]="eventDetails?.pricing"
+                [eventId]="eventDetails?.id"
+            ></categories-component>
+        </div>
+    </main>
+    <aside class="w-4/12 bg-blue-300 p-2">
+        <div class="pb-2">
+            <cart-component [eventId]="eventDetails?.id"></cart-component>
+        </div>
+        <div class="pb-2">
+            <maps-component
+                [mapsUrl]="eventDetails?.venue?.maps_url"
+            ></maps-component>
+        </div>
+        <reviews-component
+            [reviews]="eventDetails?.reviews"
+        ></reviews-component>
+    </aside>
+</div>

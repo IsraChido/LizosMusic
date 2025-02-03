@@ -4,5 +4,5 @@ import { DetailsComponent } from "../ui/pages/details/details.component";
 
 export const appRoutes: Route[] = [
     { path: "", component: HomeComponent },
-    { path: "details", component: DetailsComponent },
+    { path: "details/:id", component: DetailsComponent },
 ];

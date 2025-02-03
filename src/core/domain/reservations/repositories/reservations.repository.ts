@@ -1,12 +1,10 @@
 import { Observable } from "rxjs";
-import {
-    ApiResponse,
-    ReservationResponse,
-} from "../models/reservations.response";
-import { ReservationBody } from "../models/reservations.body";
+import { ReservationBody } from "../models/body/reservations.body";
+import { ServerErrorResponse } from "@/common/models/server-error.response";
+import { ReservationResponse } from "../models/response/reservations.response";
 
-export interface ReservationRepository {
-    postReservation(
+export abstract class ReservationRepository {
+    abstract postReservation(
         body: ReservationBody
-    ): Observable<ApiResponse<ReservationResponse>>;
+    ): Observable<ReservationResponse | ServerErrorResponse>;
 }

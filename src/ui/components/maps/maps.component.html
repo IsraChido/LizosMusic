@@ -1,11 +1,10 @@
-<section class="rounded-md border max-w-fit">
-    <iframe 
-        width="600" 
-        height="300" 
-        class="rounded-md"
-        loading="lazy" 
-        allowfullscreen 
-        referrerpolicy="no-referrer-when-downgrade" 
-        src="https://maps.google.com/maps?q=19.4269,-99.1719&output=embed">
+<section class="rounded-md border">
+    <iframe
+        class="rounded-md w-full h-72"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        [src]="safeMapsUrl"
+    >
     </iframe>
 </section>

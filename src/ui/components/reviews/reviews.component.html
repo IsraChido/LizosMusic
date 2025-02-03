@@ -1,24 +1,39 @@
-<article class="p-2">
+<article>
     <div class="rounded-md p-4 border border-gray-600 bg-slate-50">
         <div class="flex flex-row">
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
+            <ng-container
+                *ngFor="
+                    let star of getStars(reviews?.rating ?? 0);
+                    let i = index
+                "
+            >
+                <fa-icon [icon]="star" class="text-yellow-400"></fa-icon>
+            </ng-container>
+            @if ((reviews?.rating ?? 0) % 1 !== 0) {
             <fa-icon [icon]="faStarHalfAlt" class="text-yellow-400"></fa-icon>
-            <p class="font-bold text-md pl-1 text-black">+</p>
+            }
             <fa-icon [icon]="faUser" class="text-gray-500 pl-6"></fa-icon>
-            <p class="font-bold text-md pl-1 text-black"><span class="text-teal-700">256</span> usuarios</p>
+            <p class="font-bold text-md pl-1 text-black">
+                <span class="text-teal-700">{{ reviews?.count }}</span> usuarios
+            </p>
         </div>
-        <div class="flex flex-row pt-4">
-            <fa-icon [icon]="faUser" class="text-gray-500 pe-2"></fa-icon>
-            <p class="font-medium text-lg text-black pe-8">Usuario 1</p>
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
-            <fa-icon [icon]="faStar" class="text-yellow-400"></fa-icon>
-        </div>
-        <div class="flex flex-row">
-            <p class="font-normal text-lg">Súper genial</p>
+        <div class="flex flex-col pt-4">
+            @for (review of reviews?.recent; track review) {
+            <div class="flex items-center">
+                <fa-icon [icon]="faUser" class="text-gray-500 pe-2"></fa-icon>
+                <p class="font-medium text-lg text-black pe-8">
+                    {{ review.user }}
+                </p>
+                <ng-container *ngFor="let star of getStars(review.rating)">
+                    <fa-icon [icon]="star" class="text-yellow-400"></fa-icon>
+                </ng-container>
+            </div>
+            <div class="flex flex-row pb-3">
+                <p class="font-normal text-lg">
+                    {{ review.comment || "Este usuario no dejo comentario." }}
+                </p>
+            </div>
+            }
         </div>
     </div>
 </article>

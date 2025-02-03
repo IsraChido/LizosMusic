@@ -1,0 +1,51 @@
+<section class="bg-white w-full rounded-md pb-2">
+    <img
+        [class.animate-pulse]="event?.slug && imageLoadingMap[event!.slug]"
+        class="rounded-t-md w-full h-96 object-cover bg-gray-400"
+        [src]="event?.image_url"
+        [alt]="event?.slug"
+        (load)="event?.slug && onImageLoad(event!.slug)"
+        loading="eager"
+    />
+    <div class="px-4 flex flex-col">
+        <h2 class="text-3xl pt-3">{{ event?.name }}</h2>
+        <h3>
+            Ubicación:
+            {{
+                [
+                    event?.venue?.name,
+                    event?.venue?.city,
+                    event?.venue?.postal_code,
+                    event?.venue?.state,
+                    event?.venue?.country
+                ] | join : ", " : [1]
+            }}
+        </h3>
+        @if ((event?.start_at | date : "d/MM/yy") != (event?.end_at | date :
+        "d/MM/yy")) {
+        <h4>
+            Fecha de inicio y fin: {{ event?.start_at | date : "d/MM/yy" }} -
+            {{ event?.end_at | date : "d/MM/yy" }}
+        </h4>
+        } @else {
+        <h4>Fecha: {{ event?.start_at | date : "d/MM/yy" }}</h4>
+        }
+        <div class="flex flex-row align-top">
+            <h5 class="text-lg text-gray-800">
+                Hora de inicio: {{ event?.start_at | date : "shortTime" }}
+            </h5>
+            <h5 class="text-lg text-gray-800 pl-5">
+                Hora de término: {{ event?.end_at | date : "shortTime" }}
+            </h5>
+        </div>
+        <div class="flex flex-wrap flex-row justify-end items-end p-4">
+            @for (tag of event?.tags; track tag) {
+            <div
+                class="rounded-full bg-slate-400 px-3 py-1 my-1 mx-2 max-h-12 max-w-32"
+            >
+                {{ tag }}
+            </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,28 +1,22 @@
-import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { Injectable } from "@angular/core";
+import { UseCase } from "@/core/base/use-case";
+import { ServerErrorResponse } from "@/common/models/server-error.response";
+import { ReservationBody } from "../models/body/reservations.body";
 import { ReservationRepository } from "../repositories/reservations.repository";
-import { ReservationBody } from "../models/reservations.body";
-import {
-    ApiResponse,
-    ReservationResponse,
-} from "../models/reservations.response";
+import { ReservationResponse } from "../models/response/reservations.response";
 
 @Injectable({
     providedIn: "root",
 })
-export class GetEventByIdUseCase {
-    constructor(
-        private readonly reservationRepository: ReservationRepository
-    ) {}
-
-    /**
-     * Executes the use case to generate a reservation.
-     * @param body - The body of the reservation to achieve.
-     * @returns Observable<ReservationResponse> - The observable containing the reservation data.
-     */
+export class PostReservationUseCase
+    implements
+        UseCase<ReservationBody, ReservationResponse | ServerErrorResponse>
+{
+    constructor(private readonly repository: ReservationRepository) {}
     execute(
         body: ReservationBody
-    ): Observable<ApiResponse<ReservationResponse>> {
-        return this.reservationRepository.postReservation(body);
+    ): Observable<ReservationResponse | ServerErrorResponse> {
+        return this.repository.postReservation(body);
     }
 }
